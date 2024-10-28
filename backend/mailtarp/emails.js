@@ -22,3 +22,7 @@ export const sendVerificationEmail = async (email, verificatonToken) => {
     throw new Error(`Error sending verification email: ${error.message}`);
   }
 };
+
+export const sendWelcomeEmail = async (email, userName) => {
+  
+}
