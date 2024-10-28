@@ -135,3 +135,5 @@ export const logout = async (req, res) => {
   res.clearCookie("auth_token_jwt");
   res.status(200).json({ success: true, message: "Logout successfuly" });
 };
+
+export const forgotPassword = async (req, res) => {};
