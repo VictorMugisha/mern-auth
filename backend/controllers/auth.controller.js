@@ -1,7 +1,7 @@
 import { User } from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
-import { sendVerificationEmail } from "../mailtarp/emails.js";
+import { sendVerificationEmail, sendWelcomeEmail } from "../mailtarp/emails.js";
 
 export const signup = async (req, res) => {
   const { email, password, name } = req.body;
@@ -69,9 +69,15 @@ export const verifyEmail = async (req, res) => {
     user.verificationTokenExpiresAt = undefined;
 
     await user.save();
-
     await sendWelcomeEmail(user.email, user.name);
-  } catch (error) {}
+
+    res
+      .status(200)
+      .json({ success: true, message: "Email verified successfuly" });
+  } catch (error) {
+    console.log("Error verifying email: ", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
 };
 
 export const login = async (req, res) => {
