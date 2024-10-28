@@ -7,7 +7,10 @@ export const signup = async (req, res) => {
   const { email, password, name } = req.body;
   try {
     if (!email || !password || !name) {
-      throw new Error("All fields are required");
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
     }
 
     const userAlreadyExist = await User.findOne({ email });
@@ -45,7 +48,10 @@ export const signup = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+    console.log("Error in signup controller: ", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
   }
 };
 
@@ -71,12 +77,19 @@ export const verifyEmail = async (req, res) => {
     await user.save();
     await sendWelcomeEmail(user.email, user.name);
 
-    res
-      .status(200)
-      .json({ success: true, message: "Email verified successfuly" });
+    res.status(200).json({
+      success: true,
+      message: "Email verified successfuly",
+      user: {
+        ...user._doc,
+        password: undefined,
+      },
+    });
   } catch (error) {
     console.log("Error verifying email: ", error);
-    return res.status(500).json({ success: false, message: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
   }
 };
 
