@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function EmailVerificationPage() {
@@ -25,7 +25,7 @@ export default function EmailVerificationPage() {
       inputRefs.current[focusIndex].focus();
     } else {
       newCode[index] = value;
-      setCode(newCode); 
+      setCode(newCode);
 
       // Move focus to the next input field if value is entered
       if (value && index < 5) {
@@ -39,6 +39,19 @@ export default function EmailVerificationPage() {
       inputRefs.current[index - 1].focus();
     }
   }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    const verificationCode = code.join("");
+    console.log("Verification Code Submitted: ", verificationCode)
+  }
+
+  // Auto submit when all fields are filled
+  useEffect(() => {
+    if (code.every((digit) => digit != "")) {
+      handleSubmit(new Event("submit"));
+    }
+  }, [code]);
 
   return (
     <div className="max-w-md w-full bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
@@ -55,7 +68,7 @@ export default function EmailVerificationPage() {
           Enter the 6-digit code sent to your email address.
         </p>
 
-        <form className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex justify-between">
             {code.map((digit, index) => (
               <input
