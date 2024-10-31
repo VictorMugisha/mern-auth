@@ -1,13 +1,17 @@
+import { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+
+import { useAuthStore } from "./store/authStore";
+
 import FloatingShape from "./components/FloatingShape";
+import LoadingSpinner from "./components/LoadingSpinner";
+
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
-import { Toaster } from "react-hot-toast";
-import { useAuthStore } from "./store/authStore";
-import { useEffect } from "react";
-import LoadingSpinner from "./components/LoadingSpinner";
 import DashboardPage from "./pages/DashboardPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 function ProtectedRoute({ children }) {
   const { authenticated, user } = useAuthStore();
@@ -92,6 +96,14 @@ function App() {
           }
         />
         <Route path="/verify-email" element={<EmailVerificationPage />} />
+        <Route
+          path="/forgot-password"
+          element={
+            <RedirectAuthenticatedUser>
+              <ForgotPasswordPage />
+            </RedirectAuthenticatedUser>
+          }
+        />
       </Routes>
       <Toaster />
     </div>
