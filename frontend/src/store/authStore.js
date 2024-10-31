@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { create } from "zustand";
 import axios from "axios";
 
@@ -24,6 +25,28 @@ export const useAuthStore = create((set) => ({
     } catch (error) {
       set({
         error: error.response.data.message || "Error signing up",
+        isLoading: false,
+      });
+      throw error;
+    }
+  },
+
+  login: async (email, password) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await axios.post(`${API_URL}/login`, {
+        email,
+        password,
+      });
+      set({
+        authenticated: true,
+        user: response.data.user,
+        error: null,
+        isLoading: false,
+      });
+    } catch (error) {
+      set({
+        error: error.response.data.message || "Error signing in",
         isLoading: false,
       });
       throw error;
@@ -60,7 +83,6 @@ export const useAuthStore = create((set) => ({
       set({
         isCheckingAuth: false,
         authenticated: false,
-        error: error.response.data.message || "Error checking auth",
       });
     }
   },
